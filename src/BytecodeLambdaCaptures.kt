@@ -46,7 +46,7 @@ val shipComputer = ShipComputer(100)
 fun initSelfDestruct(secondsTill: Long) {
   shipComputer.runCommands {
     if (provideCrewAuthorization(listOf(captain, headEngineer, doctor))) {
-      selfDestruct(secondsTill)
+      selfDestruct()
     }
     evacuate()
   }
@@ -61,7 +61,26 @@ fun initSelfDestruct(secondsTill: Long) {
 
 
 
-// region // Bytecode when runCommands has a capture, `secondsTill`
+//     ___ __  __ ______ ____ _____ ____   ___   ____
+//    / _ )\ \/ //_  __// __// ___// __ \ / _ \ / __/
+//   / _  | \  /  / /  / _/ / /__ / /_/ // // // _/
+//  /____/  /_/  /_/  /___/ \___/ \____//____//___/
+//     ___   ___   ____ ___    __ __ __
+//    / _ ) / _ \ / __// _ |  / //_// /
+//   / _  |/ , _// _/ / __ | / ,<  /_/
+//  /____//_/|_|/___//_/ |_|/_/|_|(_)
+//
+
+
+
+
+
+
+
+
+
+
+// region // Bytecode when runCommands has no capture.
 //
 //        public static final void initSelfDestruct(long secondsTill) {
 //           shipComputer.runCommands((Function1)null.INSTANCE);
@@ -70,7 +89,15 @@ fun initSelfDestruct(secondsTill: Long) {
 // endregion
 
 
-// region // Bytecode when lambda has no captures.
+
+
+
+
+
+
+
+
+// region // Bytecode when lambda has capture, `secondsTill`.
 //
 //        public static final void initSelfDestruct(final long secondsTill) {
 //          shipComputer.runCommands((Function1)(new Function1() {
