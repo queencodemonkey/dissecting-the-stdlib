@@ -4,6 +4,9 @@ import java.io.File
 import java.text.Normalizer
 import java.time.Instant
 import java.util.*
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.math.roundToInt
 import kotlin.reflect.KProperty
 
@@ -185,20 +188,28 @@ fun getCrewForAwayMission(minRank: Int,
 val isPalindrome = { str: String -> str.toLowerCase() == str.reversed().toLowerCase() }
 val isEven = { i: Int -> i % 2 == 0 }
 
-val medianOf = { ints: IntArray ->
+val medianOf = lambda@ { ints: IntArray ->
   if (ints.isEmpty()) {
-    0
+    return@lambda 0
   } else if (ints.size == 1) {
-    ints.first()
+    return@lambda ints.first()
   } else {
     val middle = (ints.size * 0.5f).roundToInt() - 1
     if (isEven(ints.size)) {
-      ((ints[middle] + ints[middle + 1]) * 0.5f).roundToInt()
+      return@lambda ((ints[middle] + ints[middle + 1]) * 0.5f).roundToInt()
     } else {
-      ints[middle]
+      return@lambda  ints[middle]
     }
   }
 }
+
+//fun main(args: Array<String>) {
+//  println("The number 88 is ${if (isEven(88)) "even" else "odd"}")
+//  println("Is Bolton a palindrome? ${if (isPalindrome("Bolton")) "Yes!" else "It don't work!"}")
+//
+//  val ints = intArrayOf(1, 3, 5, 27, 38)
+//  println("Median of (${ints.joinToString()}) is ${medianOf(ints)}")
+//}
 
 
 
@@ -223,6 +234,7 @@ val medianOf = { ints: IntArray ->
 //    | _|| || || ' \ / _||  _|| |/ _ \| ' \ (_-<
 //    |_|  \_,_||_||_|\__| \__||_|\___/|_||_|/__/
 //
+//
 
 
 val isChrFile = { filename: String -> filename.endsWith(".chr") }
@@ -230,6 +242,12 @@ val isChrFile = { filename: String -> filename.endsWith(".chr") }
 val isCharacterFile = fun(filename: String): Boolean {
   return filename.endsWith(".chr")
 }
+
+//fun main(args: Array<String>) {
+//  val validator = isChrFile
+//  val filename = "monika.chr"
+//  println("Is $filename valid? ${if (validator(filename)) "YES" else "NO"}")
+//}
 
 
 
@@ -298,35 +316,41 @@ class TrackingService {
 val trackingService = TrackingService()
 //endregion
 
-val trackToLog = { desc: String ->
+fun trackToLog(desc: String) {
   println(TrackingEvent(desc))
   println("Sent to log: $desc")
 }
 
-val trackToFile = { desc: String ->
+fun trackToFile(desc: String) {
   writeToFile("recent_events.txt", TrackingEvent(desc))
   println("Send to file: $desc")
 }
 
-val trackToCloud = { desc: String ->
+fun trackToCloud(desc: String) {
   trackingService.sendEvent(TrackingEvent(desc))
   println("Sent to cloud: $desc")
 }
 
 fun getTracker(destination: Destination): (String) -> Unit {
   return when (destination) {
-    Destination.LOG -> trackToLog
-    Destination.FILE -> trackToFile
-    Destination.CLOUD -> trackToCloud
+    Destination.LOG -> ::trackToLog
+    Destination.FILE -> ::trackToFile
+    Destination.CLOUD -> ::trackToCloud
   }
 }
 
 fun trackSomeStuff(tracker: (String) -> Unit) {
   // Do some stuff.
-  tracker("We did some stuff!")
+  tracker.invoke("We did some stuff!")
   // Do some other stuff
   tracker("We did some other stuff!")
 }
+
+//fun main(args: Array<String>) {
+//  trackSomeStuff(getTracker(Destination.FILE))
+//
+//  trackSomeStuff(getTracker(Destination.CLOUD))
+//}
 
 
 
@@ -512,6 +536,11 @@ fun String.removeDiacriticals(): String {
       .replace(diacriticalsRegex, "")
 }
 
+//fun main(args: Array<String>) {
+//  val str = "đặc biệt"
+//  println("$str minus diacriticals = ${str.removeDiacriticals()}")
+//}
+
 
 
 
@@ -613,28 +642,36 @@ class AiTester(private val version: String) {
   }
 }
 
-val multipleTest: (AiTester, String) -> Unit = { tester: AiTester, subjectName: String ->
-  tester.activate()
+val multipleTest: AiTester.(String) -> Unit = { subjectName: String ->
   for (testId in 0x0001L..0x0010L) {
-    tester.runTest(testId, subjectName)
+    runTest(testId, subjectName)
   }
-  tester.deactivate()
 }
 
-val testOrBake: (AiTester, String) -> Unit = { tester: AiTester, subjectName: String ->
-  tester.activate()
-  if (tester.runTest(0x0088, subjectName)) {
-    tester.encourageSubject(subjectName)
+val testOrBake: AiTester.(String) -> Unit = { subjectName: String ->
+  if (runTest(0x0088, subjectName)) {
+    encourageSubject(subjectName)
   } else {
-    tester.bakeCake(Flavor.CHOCOLATE)
+    bakeCake(Flavor.CHOCOLATE)
   }
-  tester.deactivate()
 }
 
-fun runTestSession(version: String, subject: String, block: (AiTester, String) -> Unit) {
+fun runTestSession(version: String, subject: String, block: AiTester.(String) -> Unit) {
   val glados = AiTester(version)
-  block(glados, subject)
+  glados.activate()
+  glados.block(subject)
+  glados.deactivate()
 }
+
+//fun main(args: Array<String>) {
+//  runTestSession("C4.K3", "Chell") { subjectName ->
+//    if (runTest(0x0004, subjectName)) {
+//      encourageSubject(subjectName)
+//    } else {
+//      bakeCake(Flavor.CHOCOLATE)
+//    }
+//  }
+//}
 
 
 
@@ -875,6 +912,10 @@ fun startMission(candidates: List<CrewMember>) {
 
 
 
+
+
+
+
 //
 // BTW reified inline functions can't be called from Java.
 //
@@ -953,6 +994,8 @@ fun divideByTwo(n: Int): Int {
 
 
 
+
+
 infix fun ImpetuousCaptain.startLog(starDate: String) {
   println("Captain's Log. Star date… $starDate")
 }
@@ -1017,10 +1060,8 @@ val engineer = Engineer("Tali Z'orah", "vas Normandy")
 
 fun recruitSquad(): Squad {
   val squad = Squad()
-
   squad += vigilante
   squad += krogan
-
   return squad
 }
 
@@ -1051,6 +1092,10 @@ fun whoGoesFirst(squad: List<SquadMember>) {
   println("#1 → $first")
 }
 
+//fun main(args: Array<String>) {
+//  val squad = listOf(commander, vigilante, scientist, krogan, engineer)
+//  whoGoesFirst(squad)
+//}
 
 
 
@@ -1144,28 +1189,32 @@ fun installSphereIntoQuantumFluxDrive(sphere: Sphere?) {
 
 
 
+@ExperimentalContracts
 fun operate(equipment: String, block: (CrewMember) -> Unit) {
+  contract {
+    callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+  }
   block(StalwartEngineer("Chen", 2, false))
 }
 
 fun transport(operator: CrewMember?) {
-//  val insideOut: Boolean
-//  val exploded: Boolean
-//  val transported: Boolean
-//
-//  operate("digitizer") {
-//    if (it is StalwartEngineer) {
-//      insideOut = false
-//      exploded = false
-//      transported = true
-//    } else {
-//      insideOut = true
-//      exploded = true
-//      transported = false
-//    }
-//  }
-//
-//  println("Inside out? $insideOut. Exploded? $exploded. Transported? $transported")
+  val insideOut: Boolean
+  val exploded: Boolean
+  val transported: Boolean
+
+  operate("digitizer") {
+    if (it is StalwartEngineer) {
+      insideOut = false
+      exploded = false
+      transported = true
+    } else {
+      insideOut = true
+      exploded = true
+      transported = false
+    }
+  }
+
+  println("Inside out? $insideOut. Exploded? $exploded. Transported? $transported")
 }
 
 

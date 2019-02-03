@@ -46,7 +46,7 @@ val shipComputer = ShipComputer(100)
 fun initSelfDestruct(secondsTill: Long) {
   shipComputer.runCommands {
     if (provideCrewAuthorization(listOf(captain, headEngineer, doctor))) {
-      selfDestruct()
+      selfDestruct(secondsTill)
     }
     evacuate()
   }
