@@ -14,17 +14,14 @@ fun clockOut(location: String) = Unit
 
 
 
-inline fun workShift(location: String, block: (String) -> Unit) {
+fun workShift(location: String, block: (String) -> Unit) {
   println("Shift start battery level: ${checkRemainingBattery()}")
   block(location)
   println("Shift end battery level: ${checkRemainingBattery()}")
 }
 
-fun main(args: Array<String>) {
+fun main() {
   workShift("FNAF01") { location: String ->
-    if (checkRemainingBattery() < 1f) {
-      return
-    }
     clockIn(location)
     closeDoors()
     watchSecurityCamera()

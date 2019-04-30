@@ -1,12 +1,9 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
 
 import java.io.File
 import java.text.Normalizer
 import java.time.Instant
 import java.util.*
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 import kotlin.math.roundToInt
 import kotlin.reflect.KProperty
 
@@ -48,28 +45,8 @@ import kotlin.reflect.KProperty
 
 
 
-//
-//         _       _         _
-//        | |     (_)       (_)
-//        | |      _ __   __ _  _ __    __ _
-//        | |     | |\ \ / /| || '_ \  / _` |
-//        | |____ | | \ V / | || | | || (_| |
-//        |______||_|  \_/  |_||_| |_| \__, |
-//                                      __/ |
-//                                      |___/
-//         ______                         _    _         _
-//        |  ____|                       | |  (_)       | |
-//        | |__    ___  ___   ___  _ __  | |_  _   __ _ | | ___
-//        |  __|  / __|/ __| / _ \| '_ \ | __|| | / _` || |/ __|
-//        | |____ \__ \\__ \|  __/| | | || |_ | || (_| || |\__ \
-//        |______||___/|___/ \___||_| |_| \__||_| \__,_||_||___/
-//
-//
 
 
-//
-// "The Kotlin Standard Library provides living essentials for everyday work with Kotlin."
-//
 
 
 
@@ -82,12 +59,12 @@ import kotlin.reflect.KProperty
 
 //
 //
-//          _____        _  _              _    _
-//         / ____|      | || |            | |  (_)
-//        | |      ___  | || |  ___   ___ | |_  _   ___   _ __   ___
-//        | |     / _ \ | || | / _ \ / __|| __|| | / _ \ | '_ \ / __|
-//        | |____| (_) || || ||  __/| (__ | |_ | || (_) || | | |\__ \
-//         \_____|\___/ |_||_| \___| \___| \__||_| \___/ |_| |_||___/
+//      _____        _  _              _    _
+//     / ____|      | || |            | |  (_)
+//    | |      ___  | || |  ___   ___ | |_  _   ___   _ __   ___
+//    | |     / _ \ | || | / _ \ / __|| __|| | / _ \ | '_ \ / __|
+//    | |____| (_) || || ||  __/| (__ | |_ | || (_) || | | |\__ \
+//     \_____|\___/ |_||_| \___| \___| \__||_| \___/ |_| |_||___/
 //
 //
 
@@ -131,7 +108,7 @@ fun getCrewForAwayMission(minRank: Int,
                           commandDeck: List<CrewMember>, engineering: List<StalwartEngineer>,
                           medBay: List<CrewMember>, other: List<RedShirt>) =
     commandDeck.filter { it is ImpetuousCaptain || it is EnigmaticScienceOfficer }
-        .plus(engineering.first(StalwartEngineer::doingRepairs))
+        .plus(engineering.first { !it.doingRepairs })
         .plus(medBay.first { it is OrneryDoctor && it.isNotAMechanic })
         .plus(other.filterNot { it.isDead }.takeLast(3))
         .filter { it.rank > minRank }
@@ -179,14 +156,14 @@ fun getCrewForAwayMission(minRank: Int,
 
 
 
-//   ___                 _    _
-//  | __|_  _  _ _   __ | |_ (_) ___  _ _
-//  | _|| || || ' \ / _||  _|| |/ _ \| ' \
-//  |_|  \_,_||_||_|\__| \__||_|\___/|_||_|
-//   _     _  _                    _
-//  | |   (_)| |_  ___  _ _  __ _ | | ___
-//  | |__ | ||  _|/ -_)| '_|/ _` || |(_-<
-//  |____||_| \__|\___||_|  \__,_||_|/__/
+//     ___                 _    _
+//    | __|_  _  _ _   __ | |_ (_) ___  _ _
+//    | _|| || || ' \ / _||  _|| |/ _ \| ' \
+//    |_|  \_,_||_||_|\__| \__||_|\___/|_||_|
+//     _     _  _                    _
+//    | |   (_)| |_  ___  _ _  __ _ | | ___
+//    | |__ | ||  _|/ -_)| '_|/ _` || |(_-<
+//    |____||_| \__|\___||_|  \__,_||_|/__/
 //
 
 
@@ -198,19 +175,18 @@ fun getCrewForAwayMission(minRank: Int,
 
 
 
-//   _                  _        _
-//  | |    __ _  _ __  | |__  __| | __ _  ___
-//  | |__ / _` || '  \ | '_ \/ _` |/ _` |(_-<
-//  |____|\__,_||_|_|_||_.__/\__,_|\__,_|/__/
+//     _                  _        _
+//    | |    __ _  _ __  | |__  __| | __ _  ___
+//    | |__ / _` || '  \ | '_ \/ _` |/ _` |(_-<
+//    |____|\__,_||_|_|_||_.__/\__,_|\__,_|/__/
 //
-
 
 val isPalindrome = { str: String -> str.toLowerCase() == str.reversed().toLowerCase() }
 val isEven = { i: Int -> i % 2 == 0 }
 
-val medianOf = lambda@{ ints: IntArray ->
+val medianOf = { ints: IntArray ->
   if (ints.isEmpty()) {
-    return@lambda 0
+    0
   } else if (ints.size == 1) {
     ints.first()
   } else {
@@ -226,6 +202,33 @@ val medianOf = lambda@{ ints: IntArray ->
 
 
 // But no non-local returns. 😞
+
+
+
+
+
+
+
+
+
+
+//       _
+//      /_\   _ _   ___  _ _  _  _  _ __   ___  _  _  ___
+//     / _ \ | ' \ / _ \| ' \| || || '  \ / _ \| || |(_-<
+//    /_/ \_\|_||_|\___/|_||_|\_, ||_|_|_|\___/ \_,_|/__/
+//                             |__/
+//     ___                 _    _
+//    | __|_  _  _ _   __ | |_ (_) ___  _ _   ___
+//    | _|| || || ' \ / _||  _|| |/ _ \| ' \ (_-<
+//    |_|  \_,_||_||_|\__| \__||_|\___/|_||_|/__/
+//
+
+
+val isChrFile = { filename: String -> filename.endsWith(".chr") }
+
+val isCharacterFile = fun(filename: String): Boolean {
+  return filename.endsWith(".chr")
+}
 
 
 
@@ -266,6 +269,9 @@ val medianOf = lambda@{ ints: IntArray ->
 //
 // Let's talk higher-order functions…
 //
+
+
+//
 // Passing functions as parameters and return functions as values…
 //
 
@@ -291,26 +297,26 @@ class TrackingService {
 val trackingService = TrackingService()
 //endregion
 
-fun trackToLog(desc: String) {
+val trackToLog = { desc: String ->
   println(TrackingEvent(desc))
   println("Sent to log: $desc")
 }
 
-fun trackToFile(desc: String) {
+val trackToFile = { desc: String ->
   writeToFile("recent_events.txt", TrackingEvent(desc))
   println("Send to file: $desc")
 }
 
-fun trackToCloud(desc: String) {
+val trackToCloud = { desc: String ->
   trackingService.sendEvent(TrackingEvent(desc))
   println("Sent to cloud: $desc")
 }
 
 fun getTracker(destination: Destination): (String) -> Unit {
   return when (destination) {
-    Destination.LOG -> ::trackToLog
-    Destination.FILE -> ::trackToFile
-    Destination.CLOUD -> ::trackToCloud
+    Destination.LOG -> trackToLog
+    Destination.FILE -> trackToFile
+    Destination.CLOUD -> trackToCloud
   }
 }
 
@@ -330,44 +336,7 @@ fun trackSomeStuff(tracker: (String) -> Unit) {
 
 
 
-//     _
-//    /_\   _ _   ___  _ _  _  _  _ __   ___  _  _  ___
-//   / _ \ | ' \ / _ \| ' \| || || '  \ / _ \| || |(_-<
-//  /_/ \_\|_||_|\___/|_||_|\_, ||_|_|_|\___/ \_,_|/__/
-//                           |__/
-//   ___                 _    _
-//  | __|_  _  _ _   __ | |_ (_) ___  _ _   ___
-//  | _|| || || ' \ / _||  _|| |/ _ \| ' \ (_-<
-//  |_|  \_,_||_||_|\__| \__||_|\___/|_||_|/__/
-//
 
-
-
-
-val isChrFile = { filename: String -> filename.endsWith(".chr") }
-
-val isCharacterFile = fun(filename: String): Boolean {
-  return filename.endsWith(".chr")
-}
-
-
-
-
-
-
-
-
-
-
-//     ___ __  __ ______ ____ _____ ____   ___   ____
-//    / _ )\ \/ //_  __// __// ___// __ \ / _ \ / __/
-//   / _  | \  /  / /  / _/ / /__ / /_/ // // // _/
-//  /____/  /_/  /_/  /___/ \___/ \____//____//___/
-//     ___   ___   ____ ___    __ __ __
-//    / _ ) / _ \ / __// _ |  / //_// /
-//   / _  |/ , _// _/ / __ | / ,<  /_/
-//  /____//_/|_|/___//_/ |_|/_/|_|(_)
-//
 
 
 
@@ -379,18 +348,18 @@ val isCharacterFile = fun(filename: String): Boolean {
 
 
 //
-//      _____  _                     _                  _
-//     / ____|| |                   | |                | |
-//    | (___  | |_  __ _  _ __    __| |  __ _  _ __  __| |
-//     \___ \ | __|/ _` || '_ \  / _` | / _` || '__|/ _` |
-//     ____) || |_| (_| || | | || (_| || (_| || |  | (_| |
-//    |_____/  \__|\__,_||_| |_| \__,_| \__,_||_|   \__,_|
-//     ______        _                     _
-//    |  ____|      | |                   (_)
-//    | |__   __  __| |_  ___  _ __   ___  _   ___   _ __   ___
-//    |  __|  \ \/ /| __|/ _ \| '_ \ / __|| | / _ \ | '_ \ / __|
-//    | |____  >  < | |_|  __/| | | |\__ \| || (_) || | | |\__ \
-//    |______|/_/\_\ \__|\___||_| |_||___/|_| \___/ |_| |_||___/
+//      _____
+//     / ____|
+//    | (___    ___  ___   _ __    ___
+//     \___ \  / __|/ _ \ | '_ \  / _ \
+//     ____) || (__| (_) || |_) ||  __/
+//    |_____/  \___|\___/ | .__/  \___|
+//     ______             | |    _    _
+//    |  ____|            |_|   | |  (_)
+//    | |__  _   _  _ __    ___ | |_  _   ___   _ __   ___
+//    |  __|| | | || '_ \  / __|| __|| | / _ \ | '_ \ / __|
+//    | |   | |_| || | | || (__ | |_ | || (_) || | | |\__ \
+//    |_|    \__,_||_| |_| \___| \__||_| \___/ |_| |_||___/
 //
 //
 
@@ -407,6 +376,8 @@ val isCharacterFile = fun(filename: String): Boolean {
 // apply and let and run, oh my!
 // -----------------------------------
 
+
+//region <Insert class stuff here>
 class MemberConfig(
     val memberId: String,
     var lastLogin: Instant = Instant.MIN,
@@ -415,8 +386,6 @@ class MemberConfig(
     var aLaMode: Flavor = Flavor.PLAIN,
     var depecheMode: DepecheMode = DepecheMode.ENJOY_THE_SILENCE
 ) {
-
-  //region <Insert class stuff here>
   fun validateConfig(): Boolean = false
 
   fun saveToLocalFile(filename: String) {
@@ -424,7 +393,7 @@ class MemberConfig(
   }
 
   companion object {
-    fun fromText(memberId: String, text: String): MemberConfig {
+    private fun fromText(memberId: String, text: String): MemberConfig {
       return MemberConfig(memberId)
     }
 
@@ -434,11 +403,11 @@ class MemberConfig(
 
     fun fromFile(memberId: String): MemberConfig {
       val contents = File("$memberId.chr").readText(Charsets.UTF_8)
-      return MemberConfig.fromText(memberId, contents)
+      return fromText(memberId, contents)
     }
   }
-  //endregion
 }
+//endregion
 
 fun startMemberSession() {
   // apply! initialization!
@@ -467,8 +436,8 @@ fun startMemberSession() {
 
 
 //
-// Let's take a look at the standard extensions
-// and a couple not-extensions…
+// Let's take a look at the scope functions
+// and their implementations.
 //
 
 
@@ -512,31 +481,6 @@ fun startMemberSession() {
 
 
 
-inline fun <R> run(block: () -> R): R {
-  return block()
-}
-
-inline fun <T, R> with(receiver: T, block: T.() -> R): R {
-  return receiver.block()
-}
-
-inline fun <T, R> T.run(block: T.() -> R): R {
-  return block()
-}
-
-inline fun <T> T.apply(block: T.() -> Unit): T {
-  block()
-  return this
-}
-
-inline fun <T> T.also(block: (T) -> Unit): T {
-  block(this)
-  return this
-}
-
-inline fun <T, R> T.let(block: (T) -> R): R {
-  return block(this)
-}
 
 
 
@@ -558,7 +502,6 @@ inline fun <T, R> T.let(block: (T) -> R): R {
 //
 //     StringUtil.removeDiacriticals("đặc biệt")
 //
-
 
 private val diacriticalsRegex =
     Regex("\\p{InCombiningDiacriticalMarks}+")
@@ -632,73 +575,59 @@ class AiTester(private val version: String) {
     // Turn it on.
     println("ACTIVATE Genetic Lifeform and Disk OS. Version $version")
   }
-
   fun deactivate() {
     // Turn it off.
-    println("DEACTIVE Genetic Lifeform and Disk OS.")
+    println("DEACTIVATE Genetic Lifeform and Disk OS.")
   }
-
   fun runTest(testId: Long, subjectName: String): Boolean {
     // Welcome to the Aperture Science computer-aided enrichment center.
     println("Execution complete. Test $testId. Subject designation: $subjectName.")
     return rand.nextBoolean()
   }
-
   fun cancelTest(testId: Long) {
     // Nope.
     println("Cancelled $testId")
   }
-
   fun ventNeurotoxin(concentration: Float) {
     // Put it on cereal.
     println("Venting $concentration neurotoxin…")
   }
-
   fun encourageSubject(subjectName: String) {
     // Shallow platitude.
     println("PA communication to subject designated $subjectName: \"You're doing quite well.\"")
   }
-
   fun bakeCake(flavor: Flavor) {
     // There will be cake.
     println("Baked. Now cake. $flavor.")
   }
-
   fun toPotato(): Potato {
     return Potato()
   }
 }
 
-val multipleTest: AiTester.(String) -> Unit = { subjectName: String ->
+val multipleTest: (AiTester, String) -> Unit = { tester: AiTester, subjectName: String ->
+  tester.activate()
   for (testId in 0x0001L..0x0010L) {
-    runTest(testId, subjectName)
+    tester.runTest(testId, subjectName)
   }
+  tester.deactivate()
 }
 
-val testOrBake: AiTester.(String) -> Unit = { subjectName: String ->
-  if (runTest(0x0088, subjectName)) {
-    encourageSubject(subjectName)
+val testOrBake: (AiTester, String) -> Unit = { tester: AiTester, subjectName: String ->
+  tester.activate()
+  if (tester.runTest(0x0088, subjectName)) {
+    tester.encourageSubject(subjectName)
   } else {
-    bakeCake(Flavor.CHOCOLATE)
+    tester.bakeCake(Flavor.CHOCOLATE)
   }
+  tester.deactivate()
 }
 
-fun runTestSession(version: String, subject: String, block: AiTester.(String) -> Unit) {
+fun runTestSession(version: String, subject: String, block: (AiTester, String) -> Unit) {
   val glados = AiTester(version)
-  glados.activate()
-  glados.block(subject)
-  glados.deactivate()
+  block(glados, subject)
 }
 
-fun main(args: Array<String>) {
-  runTestSession("C4.K3", "Chell") { subjectName ->
-    if (runTest(0x0004, subjectName)) {
-      encourageSubject(subjectName)
-    } else {
-      bakeCake(Flavor.CHOCOLATE)
-    }
-  }
-}
 
 
 
@@ -733,7 +662,6 @@ fun readFile() {
 
 
 
-// beginregion
 //
 // Android KTX has tons of examples of leveraging
 // lambdas and lambdas with receivers
@@ -756,7 +684,7 @@ fun readFile() {
 //    So you can do…
 //
 //    supportFragmentManager.commit(allowStateLoss = true) {
-//      replace(R.id.container, someFragment, FRAGMENT_TAG_YOURE_IT)
+//      replace(R.id.container, someFragment, FRAGMENT_TAG_YOU_ARE_IT)
 //    }
 //
 
@@ -827,6 +755,12 @@ fun readFile() {
 
 
 
+
+
+
+
+
+
 //
 // Can reduce some of the penalties of lambdas through inlining.
 //
@@ -870,14 +804,16 @@ fun readFile() {
 // Some inline-related modifier keywords
 //
 
-inline fun workNightShift(location: String, shiftWork: (String) -> Unit) {
+inline fun workNightShift(location: String,
+                          shiftWork: (String) -> Unit) {
   shiftWork(location)
 }
 
-inline fun workNightShift(location: String, shiftWork: (String) -> Unit, noinline report: () -> Unit) {
+inline fun workNightShift(location: String,
+                          shiftWork: (String) -> Unit,
+                          noinline report: () -> Unit) {
   shiftWork(location)
   report()
-  val lambda = report
 }
 
 // Example from https://kotlinlang.org/docs/reference/inline-functions.html
@@ -897,31 +833,26 @@ fun usesCrossinlined() {
 
 
 
-//
-//     _____        _   __  _            _
-//    |  __ \      (_) / _|(_)          | |
-//    | |__) | ___  _ | |_  _   ___   __| |
-//    |  _  / / _ \| ||  _|| | / _ \ / _` |
-//    | | \ \|  __/| || |  | ||  __/| (_| |
-//    |_|  \_\\___||_||_|  |_| \___| \__,_|
-//
+
+
+
+
+
+
+
+//     ___       _   __  _          _
+//    | _ \ ___ (_) / _|(_) ___  __| |
+//    |   // -_)| ||  _|| |/ -_)/ _` |
+//    |_|_\\___||_||_|  |_|\___|\__,_|
 //
 
 inline fun <reified T : CrewMember> List<CrewMember>.findByName(name: String): T? {
   return find { it is T && it.name == name } as T?
 }
 
-fun startMission(candidates: List<CrewMember>) {
-  val captain: ImpetuousCaptain? = candidates.findByName("James Tiberius Kirk")
-  val scienceOfficer: EnigmaticScienceOfficer? = candidates.findByName("Spock")
-  val otherOfficer: RedShirt? = candidates.findByName("Ensign Dern")
 
-  if (captain == null && scienceOfficer == null && otherOfficer == null) {
-    // Guess we're staying home…
-  } else {
-    // Do some mission-y things.
-  }
-}
+
+
 
 
 
@@ -931,7 +862,13 @@ fun startMission(candidates: List<CrewMember>) {
 //
 // BTW reified inline functions can't be called from Java.
 //
-// Normally inline functions can be called from Java but won't be inlined.
+// " Functions with reified type parameters require
+//   additional processing to substitute the type
+//   argument values into the bytecode,
+//   and therefore they must always be inlined."
+// ~ Kotlin in Action
+//
+// Normally, inline functions can be called from Java but won't be inlined.
 //
 
 
@@ -976,6 +913,15 @@ val favoritePairs = mapOf(
 //   |_____||_| |_||_|  |_|/_/\_\
 //
 //
+
+
+
+
+
+
+
+
+
 
 //
 // Can call one-parameter class method/extension functions without `.` or `()`.
@@ -1057,6 +1003,14 @@ fun assignCaptains() {
 //
 
 
+
+
+
+
+
+
+
+
 val commander = Commander("Shepard", "Specter")
 val vigilante = Vigilante("Garrus Vakarian", "Archangel")
 val scientist = ScientistSalarian("Mordin Solus", "Scientist Salarian")
@@ -1065,12 +1019,8 @@ val engineer = Engineer("Tali Z'orah", "vas Normandy")
 
 fun recruitSquad(): Squad {
   val squad = Squad()
-
   squad += vigilante
   squad += krogan
-
-  squad -= krogan
-
   return squad
 }
 
@@ -1083,20 +1033,15 @@ fun recruitSquad(): Squad {
 
 
 
-//
-//     _____              _                       _                 _
-//    |  __ \            | |                     | |               (_)
-//    | |  | |  ___  ___ | |_  _ __  _   _   ___ | |_  _   _  _ __  _  _ __    __ _
-//    | |  | | / _ \/ __|| __|| '__|| | | | / __|| __|| | | || '__|| || '_ \  / _` |
-//    | |__| ||  __/\__ \| |_ | |   | |_| || (__ | |_ | |_| || |   | || | | || (_| |
-//    |_____/  \___||___/ \__||_|    \__,_| \___| \__| \__,_||_|   |_||_| |_| \__, |
-//     _____               _                     _    _                        __/ |
-//    |  __ \             | |                   | |  (_)                      |___/
-//    | |  | |  ___   ___ | |  __ _  _ __  __ _ | |_  _   ___   _ __   ___
-//    | |  | | / _ \ / __|| | / _` || '__|/ _` || __|| | / _ \ | '_ \ / __|
-//    | |__| ||  __/| (__ | || (_| || |  | (_| || |_ | || (_) || | | |\__ \
-//    |_____/  \___| \___||_| \__,_||_|   \__,_| \__||_| \___/ |_| |_||___/
-//
+//     ___            _                   _               _
+//    |   \  ___  ___| |_  _ _  _  _  __ | |_  _  _  _ _ (_) _ _   __ _
+//    | |) |/ -_)(_-<|  _|| '_|| || |/ _||  _|| || || '_|| || ' \ / _` |
+//    |___/ \___|/__/ \__||_|   \_,_|\__| \__| \_,_||_|  |_||_||_|\__, |
+//                                                                |___/
+//     ___            _                   _    _
+//    |   \  ___  __ | | __ _  _ _  __ _ | |_ (_) ___  _ _   ___
+//    | |) |/ -_)/ _|| |/ _` || '_|/ _` ||  _|| |/ _ \| ' \ (_-<
+//    |___/ \___|\__||_|\__,_||_|  \__,_| \__||_|\___/|_||_|/__/
 //
 
 
@@ -1118,23 +1063,27 @@ fun whoGoesFirst(squad: List<SquadMember>) {
 
 
 //
-//     _____         _                      _
-//    |  __ \       | |                    | |
-//    | |  | |  ___ | |  ___   __ _   __ _ | |_  ___  ___
-//    | |  | | / _ \| | / _ \ / _` | / _` || __|/ _ \/ __|
-//    | |__| ||  __/| ||  __/| (_| || (_| || |_|  __/\__ \
-//    |_____/  \___||_| \___| \__, | \__,_| \__|\___||___/
-//                             __/ |
-//                            |___/
+//     ___        _                   _
+//    |   \  ___ | | ___  __ _  __ _ | |_  ___  ___
+//    | |) |/ -_)| |/ -_)/ _` |/ _` ||  _|/ -_)(_-<
+//    |___/ \___||_|\___|\__, |\__,_| \__|\___|/__/
+//                       |___/
 //
 //
+
+
+
+
+
+
+
+
+
 
 class SillyNameDelegate {
-
   private var actualName: String? = null
-
   private val random = Random()
-  private val placeholderNames: List<String> =
+  private val placeholderNames =
       listOf("Englebert", "Cheeto", "Mojo", "Protagonist", "Kopfgeschlagen")
 
   // Getter
@@ -1171,26 +1120,26 @@ fun doSomeSillyUserThings() {
 
 
 //
-//    _____               _                      _
-//   / ____|             | |                    | |
-//  | |      ___   _ __  | |_  _ __  __ _   ___ | |_  ___
-//  | |     / _ \ | '_ \ | __|| '__|/ _` | / __|| __|/ __|
-//  | |____| (_) || | | || |_ | |  | (_| || (__ | |_ \__ \
-//   \_____|\___/ |_| |_| \__||_|   \__,_| \___| \__||___/
+//      _____               _                      _
+//     / ____|             | |                    | |
+//    | |      ___   _ __  | |_  _ __  __ _   ___ | |_  ___
+//    | |     / _ \ | '_ \ | __|| '__|/ _` | / __|| __|/ __|
+//    | |____| (_) || | | || |_ | |  | (_| || (__ | |_ \__ \
+//     \_____|\___/ |_| |_| \__||_|   \__,_| \___| \__||___/
 //
 //
 //  https://github.com/Kotlin/KEEP/blob/master/proposals/kotlin-contracts.md
 //
-//  https://blog.jetbrains.com/kotlin/2018/08/kotlin-1-3-m2/
+//  https://kotlinlang.org/docs/reference/whatsnew13.html
 //
-//  Kotlin 1.3!
+//  Released in Kotlin 1.3 but still experimental.
 
 
 
 
 fun installSphereIntoQuantumFluxDrive(sphere: Sphere?) {
   requireNotNull(sphere)
-  println("Is sphere beryllium: ${sphere.material == Material.BERYLLIUM}")
+  println("Is sphere beryllium: ${sphere?.material == Material.BERYLLIUM}")
 }
 
 
@@ -1202,31 +1151,28 @@ fun installSphereIntoQuantumFluxDrive(sphere: Sphere?) {
 
 
 
-@ExperimentalContracts
 fun operate(equipment: String, block: (CrewMember) -> Unit) {
-  contract {
-    callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-  }
   block(StalwartEngineer("Chen", 2, false))
 }
 
-@ExperimentalContracts
 fun transport(operator: CrewMember?) {
-  val insideOut: Boolean
-  val exploded: Boolean
-  val transported: Boolean
-
-  operate("digitizer") {
-    if (it is StalwartEngineer) {
-      insideOut = false
-      exploded = false
-      transported = true
-    } else {
-      insideOut = true
-      exploded = true
-      transported = false
-    }
-  }
+//  val insideOut: Boolean
+//  val exploded: Boolean
+//  val transported: Boolean
+//
+//  operate("digitizer") {
+//    if (it is StalwartEngineer) {
+//      insideOut = false
+//      exploded = false
+//      transported = true
+//    } else {
+//      insideOut = true
+//      exploded = true
+//      transported = false
+//    }
+//  }
+//
+//  println("Inside out? $insideOut. Exploded? $exploded. Transported? $transported")
 }
 
 
@@ -1236,23 +1182,26 @@ fun transport(operator: CrewMember?) {
 
 
 //
-//   _______ _                 _
-//  |__   __| |               | |
-//     | |  | |__   __ _ _ __ | | __  _   _  ___  _   _
-//     | |  | '_ \ / _` | '_ \| |/ / | | | |/ _ \| | | |
-//     | |  | | | | (_| | | | |   <  | |_| | (_) | |_| |
-//     |_|  |_| |_|\__,_|_| |_|_|\_\  \__, |\___/ \__,_|
-//                                     __/ |
-//                                     |___/
-//                                    _     _
-//                                   | |   | |
-//   ___  ___    _ __ ___  _   _  ___| |__ | |
-//  / __|/ _ \  | '_ ` _ \| | | |/ __| '_ \| |
-//  \__ \ (_) | | | | | | | |_| | (__| | | |_|
-//  |___/\___/  |_| |_| |_|\__,_|\___|_| |_(_)
+//     _______ _                 _
+//    |__   __| |               | |
+//       | |  | |__   __ _ _ __ | | __  _   _  ___  _   _
+//       | |  | '_ \ / _` | '_ \| |/ / | | | |/ _ \| | | |
+//       | |  | | | | (_| | | | |   <  | |_| | (_) | |_| |
+//       |_|  |_| |_|\__,_|_| |_|_|\_\  \__, |\___/ \__,_|
+//                                       __/ |
+//                                      |___/
+//                                         _     _
+//                                        | |   | |
+//        ___  ___    _ __ ___  _   _  ___| |__ | |
+//       / __|/ _ \  | '_ ` _ \| | | |/ __| '_ \| |
+//       \__ \ (_) | | | | | | | |_| | (__| | | |_|
+//       |___/\___/  |_| |_| |_|\__,_|\___|_| |_(_)
 //
 //
-//  Huyen Tue Dao
-//  @queencodemonkey
-//  randomlytyping.com
+//    Huyen Tue Dao
+//    @queencodemonkey
+//
+//    randomlytyping.com
+//    youtube.com/androiddialogs
+//
 //
